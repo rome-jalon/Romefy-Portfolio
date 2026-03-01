@@ -14,6 +14,11 @@ const router = createRouter({
       component: () => import('@/views/NutritionApp.vue'),
     },
     {
+      path: '/task-breakdown',
+      name: 'task-breakdown',
+      component: () => import('@/views/TaskBreakdownApp.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('@/views/NotFoundView.vue'),

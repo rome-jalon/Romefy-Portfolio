@@ -17,4 +17,13 @@ export const projects: ProjectConfig[] = [
     icon: 'Leaf',
     route: '/nutrition',
   },
+  {
+    id: 'task-breakdown',
+    title: 'AI Task Breakdown',
+    description:
+      'Turn natural language instructions into structured, actionable tasks using AI with drag-and-drop reordering and Excel export.',
+    tags: ['Vue 3', 'OpenRouter AI', 'Drag & Drop', 'TypeScript'],
+    icon: 'ListChecks',
+    route: '/task-breakdown',
+  },
 ]
