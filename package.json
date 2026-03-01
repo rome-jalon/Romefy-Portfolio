@@ -21,7 +21,7 @@
     "vue-chartjs": "^5.3.3",
     "vue-router": "^4.6.4",
     "vuedraggable": "^4.1.0",
-    "xlsx": "^0.18.5",
+    "xlsx-js-style": "^1.2.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
