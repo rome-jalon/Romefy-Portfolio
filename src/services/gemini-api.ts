@@ -20,10 +20,10 @@ function humanizeError(error: unknown): string {
     return 'OpenRouter API key is missing or invalid. Add your key as VITE_OPENROUTER_API_KEY in .env.local. Get one at openrouter.ai/settings/keys.'
   }
   if (msg.includes('402')) {
-    return 'Insufficient OpenRouter credits. Please add credits at openrouter.ai/settings/credits.'
+    return 'The AI service has reached its usage limit for now. Please try again later or contact the site owner.'
   }
   if (msg.includes('429')) {
-    return 'Rate limited by OpenRouter. Please wait a moment and try again.'
+    return 'Too many requests — the AI service is temporarily busy. Please wait a few seconds and try again.'
   }
   if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
     return 'Cannot connect to OpenRouter. Please check your network connection and try again.'
