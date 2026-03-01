@@ -1,0 +1,40 @@
+{
+  "planName": "Week 1 - Cutting Phase",
+  "meals": [
+    {
+      "name": "Breakfast",
+      "time": "07:00",
+      "items": [
+        { "food": "Egg, whole, raw", "quantity": 3, "unit": "piece" },
+        { "food": "Oats", "quantity": 80, "unit": "g" },
+        { "food": "Banana", "quantity": 1, "unit": "piece" }
+      ]
+    },
+    {
+      "name": "Lunch",
+      "time": "12:00",
+      "items": [
+        { "food": "Chicken breast, raw", "quantity": 200, "unit": "g" },
+        { "food": "Brown rice", "quantity": 150, "unit": "g" },
+        { "food": "Broccoli", "quantity": 100, "unit": "g" }
+      ]
+    },
+    {
+      "name": "Snack",
+      "time": "15:30",
+      "items": [
+        { "food": "Greek yogurt", "quantity": 150, "unit": "g" },
+        { "food": "Almonds", "quantity": 30, "unit": "g" }
+      ]
+    },
+    {
+      "name": "Dinner",
+      "time": "19:00",
+      "items": [
+        { "food": "Salmon fillet", "quantity": 180, "unit": "g" },
+        { "food": "Sweet potato", "quantity": 200, "unit": "g" },
+        { "food": "Spinach", "quantity": 80, "unit": "g" }
+      ]
+    }
+  ]
+}
