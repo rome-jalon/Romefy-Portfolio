@@ -7,6 +7,7 @@ defineProps<{
 
 defineEmits<{
   retry: []
+  back: []
 }>()
 </script>
 
@@ -17,9 +18,12 @@ defineEmits<{
     </div>
     <h3 class="tb-error-title">Something went wrong</h3>
     <p class="tb-error-message">{{ message }}</p>
-    <button class="tb-btn-primary" @click="$emit('retry')">
-      <RefreshCw :size="15" />
-      Try Again
-    </button>
+    <div class="tb-error-actions">
+      <button class="tb-btn-secondary" @click="$emit('back')">Edit Prompt</button>
+      <button class="tb-btn-primary" @click="$emit('retry')">
+        <RefreshCw :size="15" />
+        Try Again
+      </button>
+    </div>
   </div>
 </template>

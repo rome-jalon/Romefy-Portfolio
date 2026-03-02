@@ -56,12 +56,13 @@ async function handleExport() {
 
 <template>
   <div class="view-stack">
-    <TaskLoadingState v-if="store.resultsState === 'loading'" />
+    <TaskLoadingState v-if="store.resultsState === 'loading'" @cancel="goBack" />
 
     <TaskErrorState
       v-else-if="store.resultsState === 'error'"
       :message="store.errorMessage ?? 'An unexpected error occurred'"
       @retry="regenerate"
+      @back="goBack"
     />
 
     <template v-else-if="store.resultsState === 'success'">

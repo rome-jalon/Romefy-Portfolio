@@ -4,6 +4,19 @@ import { FileText, Upload, X, Sparkles, GitBranch } from 'lucide-vue-next'
 import { useTaskInput } from '@/composables/useTaskInput'
 import { useMdUpload } from '@/composables/useMdUpload'
 
+const props = withDefaults(
+  defineProps<{
+    initialInstruction?: string
+    initialHierarchical?: boolean
+    initialMdContent?: string | null
+  }>(),
+  {
+    initialInstruction: '',
+    initialHierarchical: false,
+    initialMdContent: null,
+  },
+)
+
 const emit = defineEmits<{
   submit: [instruction: string, mdContent: string | null, hierarchical: boolean]
 }>()
@@ -17,7 +30,7 @@ const {
   validate,
   setInstruction,
   toggleHierarchical,
-} = useTaskInput()
+} = useTaskInput(props.initialInstruction, props.initialHierarchical)
 
 const {
   mdContent,
@@ -29,7 +42,7 @@ const {
   handleDrop,
   handleFileInput,
   clearFile,
-} = useMdUpload()
+} = useMdUpload(props.initialMdContent)
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
 

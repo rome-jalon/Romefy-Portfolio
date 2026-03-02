@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { Sparkles } from 'lucide-vue-next'
+
+defineEmits<{
+  cancel: []
+}>()
 </script>
 
 <template>
@@ -14,5 +18,6 @@ import { Sparkles } from 'lucide-vue-next'
       <span class="tb-loading-dot"></span>
       <span class="tb-loading-dot"></span>
     </div>
+    <button class="tb-cancel-link" @click="$emit('cancel')">Cancel</button>
   </div>
 </template>

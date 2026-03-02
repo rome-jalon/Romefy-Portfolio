@@ -2,9 +2,9 @@ import { ref } from 'vue'
 
 const MAX_SIZE_BYTES = 500 * 1024
 
-export function useMdUpload() {
-  const mdContent = ref<string | null>(null)
-  const mdFileName = ref<string | null>(null)
+export function useMdUpload(initialContent: string | null = null) {
+  const mdContent = ref<string | null>(initialContent)
+  const mdFileName = ref<string | null>(initialContent ? 'Uploaded context.md' : null)
   const mdError = ref<string | null>(null)
   const isDragging = ref(false)
 

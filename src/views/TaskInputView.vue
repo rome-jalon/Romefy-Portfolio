@@ -25,6 +25,11 @@ function handleSubmit(instruction: string, mdContent: string | null, hierarchica
       </p>
     </div>
 
-    <TaskInputForm @submit="handleSubmit" />
+    <TaskInputForm
+      :initial-instruction="store.input.instruction"
+      :initial-hierarchical="store.input.hierarchical"
+      :initial-md-content="store.input.mdContent"
+      @submit="handleSubmit"
+    />
   </div>
 </template>

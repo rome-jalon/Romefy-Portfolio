@@ -3001,6 +3001,20 @@ body {
   }
 }
 
+.tb-cancel-link {
+  margin-top: 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-surface-500);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.tb-cancel-link:hover {
+  color: var(--color-surface-700);
+}
+
 /* ── Error State ── */
 
 .tb-error-state {
@@ -3038,6 +3052,11 @@ body {
   color: var(--color-surface-600);
   margin-bottom: 1.5rem;
   max-width: 28rem;
+}
+
+.tb-error-actions {
+  @apply flex items-center;
+  gap: 0.75rem;
 }
 
 /* ── Modal ── */

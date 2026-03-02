@@ -1,9 +1,9 @@
 import { ref, computed } from 'vue'
 import { instructionSchema } from '@/types/task-breakdown-schemas'
 
-export function useTaskInput() {
-  const instruction = ref('')
-  const hierarchical = ref(false)
+export function useTaskInput(initialInstruction = '', initialHierarchical = false) {
+  const instruction = ref(initialInstruction)
+  const hierarchical = ref(initialHierarchical)
   const validationError = ref<string | null>(null)
 
   const charCount = computed(() => instruction.value.length)
