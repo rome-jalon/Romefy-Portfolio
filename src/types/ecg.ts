@@ -144,6 +144,46 @@ export const SAMPLE_DATASETS: SampleDataset[] = [
     heartRate: '~65 bpm',
     condition: 'Long QT',
   },
+  {
+    id: 'first-degree-av-block',
+    name: 'First Degree AV Block',
+    description: 'Prolonged PR interval (~240ms) at ~68 bpm',
+    fileName: 'first-degree-av-block.json',
+    heartRate: '~68 bpm',
+    condition: 'AV Block',
+  },
+  {
+    id: 'wide-qrs',
+    name: 'Wide QRS Complex',
+    description: 'Bundle branch block pattern with QRS ~145ms at ~80 bpm',
+    fileName: 'wide-qrs-complex.json',
+    heartRate: '~80 bpm',
+    condition: 'Wide QRS',
+  },
+  {
+    id: 'atrial-fibrillation',
+    name: 'Atrial Fibrillation',
+    description: 'Very irregular rhythm with absent P waves at ~85 bpm',
+    fileName: 'atrial-fibrillation.json',
+    heartRate: '~85 bpm',
+    condition: 'AFib',
+  },
+  {
+    id: 'lvh',
+    name: 'Left Ventricular Hypertrophy',
+    description: 'Tall R waves and deep S waves at ~70 bpm',
+    fileName: 'left-ventricular-hypertrophy.json',
+    heartRate: '~70 bpm',
+    condition: 'LVH',
+  },
+  {
+    id: 'st-elevation',
+    name: 'ST Elevation',
+    description: 'ST elevation with deep Q waves at ~80 bpm',
+    fileName: 'st-elevation.json',
+    heartRate: '~80 bpm',
+    condition: 'STEMI',
+  },
 ]
 
 export const ECG_NORMAL_RANGES = {

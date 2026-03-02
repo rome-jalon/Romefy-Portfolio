@@ -370,6 +370,118 @@ const datasets = [
       },
     },
   },
+  {
+    filename: "first-degree-av-block.json",
+    patientId: "SAMPLE-006",
+    recordingDate: "2024-02-10",
+    traceConfig: {
+      rrMs: 882, // ~68 bpm
+      waveParams: {
+        pDur: 90,
+        prSeg: 130, // PR total ~240ms (very prolonged)
+        qDur: 20,
+        rDur: 30,
+        sDur: 30,
+        stSeg: 80,
+        tDur: 160,
+        pAmp: 0.22,
+        rAmp: 1.2,
+        qAmp: -0.1,
+        sAmpBase: -0.3,
+        tAmp: 0.30,
+      },
+    },
+  },
+  {
+    filename: "wide-qrs-complex.json",
+    patientId: "SAMPLE-007",
+    recordingDate: "2024-02-10",
+    traceConfig: {
+      rrMs: 750, // ~80 bpm
+      waveParams: {
+        pDur: 80,
+        prSeg: 60,
+        qDur: 35,   // Wider Q
+        rDur: 50,   // Wider R – gives QRS ~145ms (wide)
+        sDur: 50,   // Wider S
+        stSeg: 70,
+        tDur: 170,
+        pAmp: 0.20,
+        rAmp: 1.3,
+        qAmp: -0.15,
+        sAmpBase: -0.4,
+        tAmp: 0.35,
+      },
+    },
+  },
+  {
+    filename: "atrial-fibrillation.json",
+    patientId: "SAMPLE-008",
+    recordingDate: "2024-02-10",
+    traceConfig: {
+      rrMs: 700, // ~85 bpm average (not used — irregular)
+      irregular: true,
+      rrRange: [450, 1100], // Very wide RR range for AF
+      waveParams: {
+        pDur: 40,    // Tiny / absent P waves
+        prSeg: 30,
+        qDur: 20,
+        rDur: 30,
+        sDur: 30,
+        stSeg: 80,
+        tDur: 150,
+        pAmp: 0.04,  // Nearly absent P waves (fibrillatory baseline)
+        rAmp: 1.15,
+        qAmp: -0.1,
+        sAmpBase: -0.3,
+        tAmp: 0.28,
+      },
+    },
+  },
+  {
+    filename: "left-ventricular-hypertrophy.json",
+    patientId: "SAMPLE-009",
+    recordingDate: "2024-03-05",
+    traceConfig: {
+      rrMs: 857, // ~70 bpm
+      waveParams: {
+        pDur: 90,    // Slightly wider P (left atrial enlargement)
+        prSeg: 60,
+        qDur: 22,
+        rDur: 32,
+        sDur: 35,
+        stSeg: 80,
+        tDur: 170,
+        pAmp: 0.25,
+        rAmp: 1.8,   // Tall R wave amplitude (LVH hallmark)
+        qAmp: -0.12,
+        sAmpBase: -0.5, // Deep S waves (especially V1-V3)
+        tAmp: 0.38,
+      },
+    },
+  },
+  {
+    filename: "st-elevation.json",
+    patientId: "SAMPLE-010",
+    recordingDate: "2024-03-05",
+    traceConfig: {
+      rrMs: 750, // ~80 bpm
+      waveParams: {
+        pDur: 78,
+        prSeg: 58,
+        qDur: 22,
+        rDur: 28,
+        sDur: 28,
+        stSeg: 100,  // Slightly longer ST
+        tDur: 180,   // Broader T wave
+        pAmp: 0.18,
+        rAmp: 1.0,   // Slightly reduced R (loss of R-wave height in infarct)
+        qAmp: -0.18, // Deeper Q waves (pathological Q)
+        sAmpBase: -0.25,
+        tAmp: 0.55,  // Tall peaked T wave (hyperacute T / ST elevation effect)
+      },
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------
