@@ -7,10 +7,25 @@ const ecgMetadataSchema = z.object({
   device: z.string().optional(),
 }).optional()
 
+/**
+ * Lead arrays use z.array(z.any()) to avoid Zod validating 60,000+ numbers
+ * individually (which causes stack overflow in browsers). The .refine() below
+ * checks that every element is a finite number via a simple loop instead.
+ */
+const numberArraySchema = z.array(z.any()).min(1).refine(
+  (arr) => {
+    for (let i = 0; i < arr.length; i++) {
+      if (typeof arr[i] !== 'number' || Number.isNaN(arr[i])) return false
+    }
+    return true
+  },
+  { message: 'Lead array must contain only numbers' },
+)
+
 const leadsSchema = z.object(
   Object.fromEntries(
-    ECG_LEAD_NAMES.map((name) => [name, z.array(z.number()).min(1, `Lead ${name}: must have at least one sample`)])
-  ) as Record<(typeof ECG_LEAD_NAMES)[number], z.ZodArray<z.ZodNumber>>
+    ECG_LEAD_NAMES.map((name) => [name, numberArraySchema])
+  ) as Record<(typeof ECG_LEAD_NAMES)[number], typeof numberArraySchema>
 )
 
 export const ecgDataSchema = z.object({

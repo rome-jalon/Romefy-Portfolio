@@ -25,7 +25,13 @@ export function useEcgFileUpload(onValidData: (data: EcgData) => void) {
 
     isValidating.value = true
     try {
-      const raw = JSON.parse(content)
+      let raw: unknown
+      try {
+        raw = JSON.parse(content)
+      } catch {
+        validationErrors.value = ['Invalid JSON — the file could not be parsed.']
+        return
+      }
       const result = ecgDataSchema.safeParse(raw)
       if (!result.success) {
         validationErrors.value = result.error.issues.map(
@@ -35,8 +41,10 @@ export function useEcgFileUpload(onValidData: (data: EcgData) => void) {
       }
       parsedData.value = result.data as EcgData
       onValidData(result.data as EcgData)
-    } catch {
-      validationErrors.value = ['Invalid JSON — the file could not be parsed.']
+    } catch (err) {
+      validationErrors.value = [
+        err instanceof Error ? err.message : 'Validation failed — please check the file format.',
+      ]
     } finally {
       isValidating.value = false
     }
