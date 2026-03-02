@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import('@/views/TaskBreakdownApp.vue'),
     },
     {
+      path: '/ecg-analyzer',
+      name: 'ecg-analyzer',
+      component: () => import('@/views/EcgAnalyzerApp.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('@/views/NotFoundView.vue'),

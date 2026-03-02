@@ -26,4 +26,13 @@ export const projects: ProjectConfig[] = [
     icon: 'ListChecks',
     route: '/task-breakdown',
   },
+  {
+    id: 'ecg-analyzer',
+    title: 'AI ECG Analyzer',
+    description:
+      'Upload 12-lead ECG data, run in-browser signal processing with Pan-Tompkins detection, and get AI-powered clinical interpretation.',
+    tags: ['Vue 3', 'Canvas2D', 'OpenRouter AI', 'Signal Processing'],
+    icon: 'Activity',
+    route: '/ecg-analyzer',
+  },
 ]
