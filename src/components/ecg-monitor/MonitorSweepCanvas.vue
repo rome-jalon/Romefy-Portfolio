@@ -16,8 +16,6 @@ const canvasRef = ref<HTMLCanvasElement | null>(null)
 const FEED_INTERVAL = 50 // ms
 const SAMPLES_PER_TICK = Math.round(SAMPLING_RATE * (FEED_INTERVAL / 1000)) // 25 samples
 
-let feedTimer: ReturnType<typeof setInterval> | null = null
-
 function tickFeed(): number[] {
   return feed.consumeSamples(SAMPLES_PER_TICK)
 }
@@ -50,7 +48,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   stop()
-  if (feedTimer) clearInterval(feedTimer)
 })
 
 defineExpose({ feed, resetSweep, start, stop })
