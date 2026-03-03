@@ -66,6 +66,47 @@ function biquadFilter(signal: number[], c: BiquadCoeffs): number[] {
 }
 
 /**
+ * Second-order IIR notch (band-reject) filter.
+ * Removes a narrow frequency band centred at `f0` Hz.
+ * Q ≈ 30 gives a ~1.7 Hz notch width at 50 Hz — tight enough to preserve
+ * surrounding ECG content while rejecting powerline interference.
+ */
+export function notchFilter(
+  signal: number[],
+  f0: number,
+  samplingRate: number,
+  Q: number = 30,
+): number[] {
+  const w0 = (2 * Math.PI * f0) / samplingRate
+  const bw = f0 / Q
+  const r = 1 - (Math.PI * bw) / samplingRate
+  const cosW0 = Math.cos(w0)
+
+  // Normalise so gain = 1 at DC
+  const a0 = 1
+  const a1 = -2 * cosW0 * r
+  const a2 = r * r
+  const scale = (1 - 2 * cosW0 + 1) / (a0 + a1 + a2) // DC gain correction
+  const b0 = 1 / scale
+  const b1 = -2 * cosW0 / scale
+  const b2 = 1 / scale
+
+  // Direct Form II biquad
+  const out = new Array<number>(signal.length)
+  let x1 = 0, x2 = 0, y1 = 0, y2 = 0
+
+  for (let i = 0; i < signal.length; i++) {
+    const x0 = signal[i]!
+    const y0 = b0 * x0 + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
+    out[i] = y0
+    x2 = x1; x1 = x0
+    y2 = y1; y1 = y0
+  }
+
+  return out
+}
+
+/**
  * Pan-Tompkins R-peak detection algorithm.
  * Steps: differentiate -> square -> moving-window integrate -> adaptive threshold
  */
