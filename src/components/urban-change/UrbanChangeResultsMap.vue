@@ -23,9 +23,13 @@ const changeColors: Record<ChangeType, string> = {
 }
 
 function buildingToGeoJSON(change: BuildingChange) {
-  const coords = change.building.geometry.map((p) => [p.lon, p.lat])
-  if (coords.length > 0 && (coords[0][0] !== coords[coords.length - 1][0] || coords[0][1] !== coords[coords.length - 1][1])) {
-    coords.push([...coords[0]])
+  const coords: number[][] = change.building.geometry.map((p) => [p.lon, p.lat])
+  if (coords.length > 0) {
+    const first = coords[0]!
+    const last = coords[coords.length - 1]!
+    if (first[0] !== last[0] || first[1] !== last[1]) {
+      coords.push([first[0]!, first[1]!])
+    }
   }
   return {
     type: 'Feature' as const,
@@ -66,9 +70,9 @@ function renderLayers() {
   if (!map || !store.changeSummary) return
 
   // Clear existing
-  if (addedLayer.value) { map.removeLayer(addedLayer.value); addedLayer.value = null }
-  if (removedLayer.value) { map.removeLayer(removedLayer.value); removedLayer.value = null }
-  if (modifiedLayer.value) { map.removeLayer(modifiedLayer.value); modifiedLayer.value = null }
+  if (addedLayer.value) { map.removeLayer(addedLayer.value as unknown as L.Layer); addedLayer.value = null }
+  if (removedLayer.value) { map.removeLayer(removedLayer.value as unknown as L.Layer); removedLayer.value = null }
+  if (modifiedLayer.value) { map.removeLayer(modifiedLayer.value as unknown as L.Layer); modifiedLayer.value = null }
 
   const summary = store.changeSummary
 

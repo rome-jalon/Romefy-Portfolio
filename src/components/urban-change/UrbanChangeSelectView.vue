@@ -61,13 +61,14 @@ function onSearchInput() {
 function selectSearchResult(result: NominatimResult) {
   const lat = parseFloat(result.lat)
   const lng = parseFloat(result.lon)
+  const shortName = result.display_name.split(',')[0] ?? result.display_name
   store.setLocation({
-    name: result.display_name.split(',')[0],
+    name: shortName,
     displayName: result.display_name,
     lat,
     lng,
   })
-  searchQuery.value = result.display_name.split(',')[0]
+  searchQuery.value = shortName
   showResults.value = false
   if (mapRef.value) {
     mapRef.value.flyTo([lat, lng], 15, { duration: 1.5 })
@@ -150,8 +151,8 @@ onMounted(() => {
     })
     map.addControl(drawControl)
 
-    map.on(L.Draw.Event.CREATED, (e: L.DrawEvents.Created) => {
-      const layer = e.layer
+    map.on(L.Draw.Event.CREATED, (e: L.LeafletEvent) => {
+      const layer = (e as L.DrawEvents.Created).layer
       items.clearLayers()
       items.addLayer(layer)
       handleBoundsDrawn(layer)

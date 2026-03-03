@@ -165,8 +165,8 @@ function computeStats(
     modifiedCount: modified.length,
     netAreaChangeM2: totalAreaB - totalAreaA,
     landUseShifts: Array.from(shiftMap.entries()).map(([key, count]) => {
-      const [from, to] = key.split('→')
-      return { from, to, count }
+      const parts = key.split('→')
+      return { from: parts[0] ?? '', to: parts[1] ?? '', count }
     }),
   }
 }

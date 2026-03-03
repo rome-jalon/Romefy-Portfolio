@@ -62,10 +62,12 @@ function computePolygonArea(geometry: Array<{ lat: number; lon: number }>): numb
   let area = 0
   for (let i = 0; i < geometry.length; i++) {
     const j = (i + 1) % geometry.length
-    const xi = geometry[i].lon * toRad * R * Math.cos(geometry[i].lat * toRad)
-    const yi = geometry[i].lat * toRad * R
-    const xj = geometry[j].lon * toRad * R * Math.cos(geometry[j].lat * toRad)
-    const yj = geometry[j].lat * toRad * R
+    const pi = geometry[i]!
+    const pj = geometry[j]!
+    const xi = pi.lon * toRad * R * Math.cos(pi.lat * toRad)
+    const yi = pi.lat * toRad * R
+    const xj = pj.lon * toRad * R * Math.cos(pj.lat * toRad)
+    const yj = pj.lat * toRad * R
     area += xi * yj - xj * yi
   }
   return Math.abs(area) / 2
@@ -98,7 +100,7 @@ function parseLandUse(response: OverpassResponse): LandUseArea[] {
       type: el.type as 'way' | 'relation',
       geometry: el.geometry!,
       tags: el.tags ?? {},
-      landUseType: el.tags!.landuse,
+      landUseType: el.tags!.landuse as string,
       area: computePolygonArea(el.geometry!),
     }))
 }
