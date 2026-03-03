@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { Search, MapPin, AlertTriangle, ArrowRight } from 'lucide-vue-next'
+import { Search, MapPin, AlertTriangle, ArrowRight, Square } from 'lucide-vue-next'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import 'leaflet-draw/dist/leaflet.draw.css'
-import 'leaflet-draw'
 import { useUrbanChangeStore } from '@/stores/urban-change'
 import { searchLocation } from '@/services/nominatim-api'
 import type { NominatimResult, QuickStartCity } from '@/types/urban-change'
@@ -15,10 +13,20 @@ const searchQuery = ref('')
 const searchResults = ref<NominatimResult[]>([])
 const isSearching = ref(false)
 const showResults = ref(false)
-const mapRef = ref<L.Map | null>(null)
-const drawnItems = ref<L.FeatureGroup | null>(null)
+const isDrawMode = ref(false)
 
+let mapInstance: L.Map | null = null
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
+let drawStartLatLng: L.LatLng | null = null
+let isDrawing = false
+let currentRect: L.Rectangle | null = null
+
+const RECT_STYLE: L.PathOptions = {
+  color: '#10b981',
+  weight: 2,
+  fillOpacity: 0.15,
+  fillColor: '#10b981',
+}
 
 const quickStartCities: QuickStartCity[] = [
   { name: 'Dubai', lat: 25.2048, lng: 55.2708, zoom: 15, description: 'Rapid skyscraper growth' },
@@ -70,8 +78,8 @@ function selectSearchResult(result: NominatimResult) {
   })
   searchQuery.value = shortName
   showResults.value = false
-  if (mapRef.value) {
-    mapRef.value.flyTo([lat, lng], 15, { duration: 1.5 })
+  if (mapInstance) {
+    mapInstance.flyTo([lat, lng], 15, { duration: 1.5 })
   }
 }
 
@@ -84,13 +92,13 @@ function selectQuickStart(city: QuickStartCity) {
   })
   searchQuery.value = city.name
   showResults.value = false
-  if (mapRef.value) {
-    mapRef.value.flyTo([city.lat, city.lng], city.zoom, { duration: 1.5 })
+  if (mapInstance) {
+    mapInstance.flyTo([city.lat, city.lng], city.zoom, { duration: 1.5 })
   }
 }
 
-function handleBoundsDrawn(layer: L.Layer) {
-  const bounds = (layer as L.Rectangle).getBounds()
+function commitRectangle(rect: L.Rectangle) {
+  const bounds = rect.getBounds()
   const area = calculateAreaKm2(bounds)
   store.setBounds(
     {
@@ -101,6 +109,81 @@ function handleBoundsDrawn(layer: L.Layer) {
     },
     area,
   )
+}
+
+function enableDrawMode() {
+  const map = mapInstance
+  if (!map) return
+  isDrawMode.value = true
+  map.dragging.disable()
+  map.getContainer().style.cursor = 'crosshair'
+}
+
+function disableDrawMode() {
+  const map = mapInstance
+  if (!map) return
+  isDrawMode.value = false
+  isDrawing = false
+  drawStartLatLng = null
+  map.dragging.enable()
+  map.getContainer().style.cursor = ''
+}
+
+function clearSelection() {
+  if (currentRect && mapInstance) {
+    mapInstance.removeLayer(currentRect)
+    currentRect = null
+  }
+  store.setBounds(null, 0)
+}
+
+function onMapMouseDown(e: L.LeafletMouseEvent) {
+  if (!isDrawMode.value) return
+  isDrawing = true
+  drawStartLatLng = e.latlng
+
+  // Remove previous rectangle
+  if (currentRect && mapInstance) {
+    mapInstance.removeLayer(currentRect)
+    currentRect = null
+  }
+}
+
+function onMapMouseMove(e: L.LeafletMouseEvent) {
+  if (!isDrawing || !drawStartLatLng || !mapInstance) return
+
+  const bounds = L.latLngBounds(drawStartLatLng, e.latlng)
+
+  if (currentRect) {
+    currentRect.setBounds(bounds)
+  } else {
+    currentRect = L.rectangle(bounds, RECT_STYLE).addTo(mapInstance)
+  }
+}
+
+function onMapMouseUp(e: L.LeafletMouseEvent) {
+  if (!isDrawing || !drawStartLatLng || !mapInstance) return
+
+  isDrawing = false
+  const bounds = L.latLngBounds(drawStartLatLng, e.latlng)
+  drawStartLatLng = null
+
+  // Ignore tiny accidental clicks (less than ~50m across)
+  const size = bounds.getNorthEast().distanceTo(bounds.getSouthWest())
+  if (size < 50) {
+    if (currentRect) {
+      mapInstance.removeLayer(currentRect)
+      currentRect = null
+    }
+    return
+  }
+
+  if (!currentRect) {
+    currentRect = L.rectangle(bounds, RECT_STYLE).addTo(mapInstance)
+  }
+
+  commitRectangle(currentRect)
+  disableDrawMode()
 }
 
 function formatArea(areaKm2: number): string {
@@ -128,50 +211,22 @@ onMounted(() => {
       maxZoom: 19,
     }).addTo(map)
 
-    const items = new L.FeatureGroup()
-    map.addLayer(items)
-    drawnItems.value = items
+    // Custom rectangle drawing via native mouse events
+    map.on('mousedown', onMapMouseDown)
+    map.on('mousemove', onMapMouseMove)
+    map.on('mouseup', onMapMouseUp)
 
-    const drawControl = new L.Control.Draw({
-      draw: {
-        rectangle: {
-          shapeOptions: {
-            color: '#10b981',
-            weight: 2,
-            fillOpacity: 0.15,
-          },
-        } as L.DrawOptions.RectangleOptions,
-        polygon: false,
-        polyline: false,
-        circle: false,
-        marker: false,
-        circlemarker: false,
-      },
-      edit: { featureGroup: items },
-    })
-    map.addControl(drawControl)
-
-    map.on(L.Draw.Event.CREATED, (e: L.LeafletEvent) => {
-      const layer = (e as L.DrawEvents.Created).layer
-      items.clearLayers()
-      items.addLayer(layer)
-      handleBoundsDrawn(layer)
-    })
-
-    map.on(L.Draw.Event.DELETED, () => {
-      store.setBounds(null, 0)
-    })
-
-    mapRef.value = map
+    mapInstance = map
 
     // If returning from Stage 2 with existing bounds, restore them
     if (store.selectedBounds) {
       const b = store.selectedBounds
       const rect = L.rectangle(
         [[b.south, b.west], [b.north, b.east]],
-        { color: '#10b981', weight: 2, fillOpacity: 0.15 },
+        RECT_STYLE,
       )
-      items.addLayer(rect)
+      rect.addTo(map)
+      currentRect = rect
       map.fitBounds(rect.getBounds(), { padding: [50, 50] })
     }
 
@@ -183,9 +238,9 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (mapRef.value) {
-    mapRef.value.remove()
-    mapRef.value = null
+  if (mapInstance) {
+    mapInstance.remove()
+    mapInstance = null
   }
   if (debounceTimer) clearTimeout(debounceTimer)
 })
@@ -244,6 +299,24 @@ watch(
 
     <div class="uc-map-layout">
       <div class="uc-map-container">
+        <div class="uc-map-toolbar">
+          <button
+            class="uc-draw-btn"
+            :class="{ 'uc-draw-btn--active': isDrawMode }"
+            @click="isDrawMode ? disableDrawMode() : enableDrawMode()"
+          >
+            <Square :size="14" />
+            {{ isDrawMode ? 'Cancel Drawing' : 'Draw Rectangle' }}
+          </button>
+          <button
+            v-if="store.selectedBounds"
+            class="uc-draw-btn uc-draw-btn--clear"
+            @click="clearSelection"
+          >
+            Clear
+          </button>
+          <span v-if="isDrawMode" class="uc-draw-hint">Click and drag on the map to draw a rectangle</span>
+        </div>
         <div id="uc-map" class="uc-map-element" />
       </div>
 
@@ -289,8 +362,8 @@ watch(
 
       <div v-else class="uc-empty-state">
         <MapPin :size="24" class="uc-empty-state-icon" />
-        <p class="uc-empty-state-title">Draw a rectangle on the map</p>
-        <p class="uc-empty-state-desc">Use the rectangle tool in the top-left corner of the map to select an area for analysis.</p>
+        <p class="uc-empty-state-title">Select an area to analyze</p>
+        <p class="uc-empty-state-desc">Click "Draw Rectangle" above the map, then click and drag to select a district.</p>
       </div>
     </div>
   </div>
