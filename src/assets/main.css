@@ -2190,6 +2190,27 @@ body {
   margin-bottom: 1rem;
 }
 
+/* Per-project icon accent colors */
+.project-icon--nutrition {
+  background: linear-gradient(135deg, #022c22, #064e3b);
+  color: #10b981;
+}
+
+.project-icon--task-breakdown {
+  background: linear-gradient(135deg, #2e1065, #4c1d95);
+  color: #a78bfa;
+}
+
+.project-icon--ecg-analyzer {
+  background: linear-gradient(135deg, #083344, #164e63);
+  color: #22d3ee;
+}
+
+.project-icon--urban-change {
+  background: linear-gradient(135deg, #451a03, #78350f);
+  color: #fbbf24;
+}
+
 .project-card-title {
   font-family: var(--font-display);
   font-size: 1.125rem;

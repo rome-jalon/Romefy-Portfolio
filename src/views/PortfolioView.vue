@@ -37,7 +37,7 @@ function openProject(route: string) {
           class="project-card"
           @click="openProject(project.route)"
         >
-          <div class="project-card-icon-wrap">
+          <div class="project-card-icon-wrap" :class="`project-icon--${project.id}`">
             <component
               :is="iconMap[project.icon]"
               :size="24"
