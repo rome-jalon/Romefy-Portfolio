@@ -7,6 +7,8 @@ import type {
   EcgAnalyzerStage,
   EcgAnalysisState,
   EcgAiState,
+  FilterMode,
+  NotchFilterSetting,
 } from '@/types/ecg'
 
 export const useEcgAnalyzerStore = defineStore('ecg-analyzer', () => {
@@ -19,6 +21,8 @@ export const useEcgAnalyzerStore = defineStore('ecg-analyzer', () => {
   const aiInterpretation = ref<EcgAiInterpretation | null>(null)
   const aiState = ref<EcgAiState>('idle')
   const aiError = ref<string | null>(null)
+  const filterMode = ref<FilterMode>('monitoring')
+  const notchFilter = ref<NotchFilterSetting>('off')
 
   function setEcgData(data: EcgData | null) {
     ecgData.value = data
@@ -64,6 +68,14 @@ export const useEcgAnalyzerStore = defineStore('ecg-analyzer', () => {
     aiError.value = error
   }
 
+  function setFilterMode(mode: FilterMode) {
+    filterMode.value = mode
+  }
+
+  function setNotchFilter(setting: NotchFilterSetting) {
+    notchFilter.value = setting
+  }
+
   function goToStage(stage: EcgAnalyzerStage) {
     currentStage.value = stage
   }
@@ -78,6 +90,8 @@ export const useEcgAnalyzerStore = defineStore('ecg-analyzer', () => {
     aiInterpretation.value = null
     aiState.value = 'idle'
     aiError.value = null
+    filterMode.value = 'monitoring'
+    notchFilter.value = 'off'
   }
 
   return {
@@ -98,6 +112,10 @@ export const useEcgAnalyzerStore = defineStore('ecg-analyzer', () => {
     setAiInterpretation,
     setAiState,
     setAiError,
+    filterMode,
+    notchFilter,
+    setFilterMode,
+    setNotchFilter,
     goToStage,
     reset,
   }
