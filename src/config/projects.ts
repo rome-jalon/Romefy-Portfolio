@@ -44,13 +44,4 @@ export const projects: ProjectConfig[] = [
     icon: 'MapPin',
     route: '/urban-change',
   },
-  {
-    id: 'ecg-monitor',
-    title: 'Lead II ECG Monitor',
-    description:
-      'Live Lead II monitoring station with technician review, flagging, and simulated client notifications.',
-    tags: ['Lead II', 'Real-Time', 'AI Interpretation', 'Canvas'],
-    icon: 'HeartPulse',
-    route: '/ecg-monitor',
-  },
 ]

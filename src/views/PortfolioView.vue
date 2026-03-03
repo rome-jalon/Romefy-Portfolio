@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { Leaf, ListChecks, Activity, MapPin, HeartPulse } from 'lucide-vue-next'
+import { Leaf, ListChecks, Activity, MapPin } from 'lucide-vue-next'
 import { projects } from '@/config/projects'
 import type { Component } from 'vue'
 
@@ -11,7 +11,6 @@ const iconMap: Record<string, Component> = {
   ListChecks,
   Activity,
   MapPin,
-  HeartPulse,
 }
 
 function openProject(route: string) {

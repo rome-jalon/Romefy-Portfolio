@@ -29,11 +29,6 @@ const router = createRouter({
       component: () => import('@/views/UrbanChangeApp.vue'),
     },
     {
-      path: '/ecg-monitor',
-      name: 'ecg-monitor',
-      component: () => import('@/views/EcgMonitorApp.vue'),
-    },
-    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('@/views/NotFoundView.vue'),
