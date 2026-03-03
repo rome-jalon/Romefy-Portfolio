@@ -5639,6 +5639,20 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-height: 100%;
+}
+
+.monitor-patient-nav {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-surface-300);
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.monitor-patient-nav .monitor-btn {
+  flex: 1;
 }
 
 /* ── HR Overlay (on canvas) ── */

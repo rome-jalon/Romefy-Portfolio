@@ -66,7 +66,15 @@ onBeforeRouteLeave(() => {
       <div class="monitor-panel">
         <div class="monitor-panel-inner">
           <MonitorFindings />
-          <MonitorActions @previous-patient="handlePreviousPatient" @next-patient="handleNextPatient" />
+          <MonitorActions />
+          <div class="monitor-patient-nav">
+            <button class="monitor-btn monitor-btn-next" @click="handlePreviousPatient">
+              ← Prev Patient
+            </button>
+            <button class="monitor-btn monitor-btn-next" @click="handleNextPatient">
+              Next Patient →
+            </button>
+          </div>
         </div>
       </div>
     </div>
