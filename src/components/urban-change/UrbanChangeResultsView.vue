@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { Loader2, AlertCircle, ArrowLeft, RotateCcw } from 'lucide-vue-next'
+import { computed, ref } from 'vue'
+import { Loader2, AlertCircle, ArrowLeft, RotateCcw, Download } from 'lucide-vue-next'
 import { useUrbanChangeStore } from '@/stores/urban-change'
 import { useUrbanAnalysis } from '@/composables/useUrbanAnalysis'
+import { exportUrbanChangePdf } from '@/services/urban-change-pdf'
 import UrbanChangeResultsMap from '@/components/urban-change/UrbanChangeResultsMap.vue'
 import UrbanChangeStatsCards from '@/components/urban-change/UrbanChangeStatsCards.vue'
 import UrbanChangeNarrativePanel from '@/components/urban-change/UrbanChangeNarrativePanel.vue'
@@ -26,6 +27,24 @@ const loadingMessage = computed(() => {
   }
 })
 
+const isExporting = ref(false)
+
+const totalChanges = computed(() => {
+  if (!store.changeSummary) return 0
+  const s = store.changeSummary.stats
+  return s.addedCount + s.removedCount + s.modifiedCount
+})
+
+const totalBuildings = computed(() => {
+  if (!store.changeSummary) return 0
+  const s = store.changeSummary.stats
+  return s.totalBuildingsYearA + s.totalBuildingsYearB
+})
+
+const locationName = computed(() =>
+  store.selectedLocation?.name ?? 'Unknown Location',
+)
+
 function goBackToConfigure() {
   store.goToStage(2)
 }
@@ -36,6 +55,18 @@ function startNewAnalysis() {
 
 function retryAnalysis() {
   runAnalysis()
+}
+
+async function handleExportPdf() {
+  if (isExporting.value) return
+  isExporting.value = true
+  try {
+    await exportUrbanChangePdf('uc-dashboard-content', locationName.value)
+  } catch (err) {
+    console.error('PDF export failed:', err)
+  } finally {
+    isExporting.value = false
+  }
 }
 </script>
 
@@ -77,15 +108,36 @@ function retryAnalysis() {
           <RotateCcw :size="14" />
           New Analysis
         </button>
+        <button
+          class="uc-toolbar-btn uc-toolbar-btn--export"
+          :disabled="isExporting"
+          @click="handleExportPdf"
+        >
+          <Loader2 v-if="isExporting" :size="14" class="uc-loading-spinner" />
+          <Download v-else :size="14" />
+          {{ isExporting ? 'Exporting...' : 'Export PDF' }}
+        </button>
       </div>
 
-      <div class="uc-split-view">
-        <div class="uc-map-panel">
-          <UrbanChangeResultsMap />
-        </div>
-        <div class="uc-info-panel">
-          <UrbanChangeStatsCards />
-          <UrbanChangeNarrativePanel />
+      <div v-if="totalBuildings < 5" class="uc-edge-case-card">
+        <AlertCircle :size="20" class="uc-edge-case-icon" />
+        <p class="uc-edge-case-text">Limited mapping coverage in this area. Try a larger city.</p>
+      </div>
+
+      <div v-if="totalChanges === 0" class="uc-edge-case-card">
+        <AlertCircle :size="20" class="uc-edge-case-icon" />
+        <p class="uc-edge-case-text">No significant changes detected between these years. Try a wider time range or a different area.</p>
+      </div>
+
+      <div id="uc-dashboard-content" class="uc-dashboard-content">
+        <div class="uc-split-view">
+          <div class="uc-map-panel">
+            <UrbanChangeResultsMap />
+          </div>
+          <div class="uc-info-panel">
+            <UrbanChangeStatsCards />
+            <UrbanChangeNarrativePanel />
+          </div>
         </div>
       </div>
     </template>
