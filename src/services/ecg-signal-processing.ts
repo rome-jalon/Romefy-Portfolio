@@ -7,16 +7,22 @@ import type {
   LeadAnalysis,
   AbnormalityFlag,
   EcgAnalysisResult,
+  DspConfig,
 } from '@/types/ecg'
-import { ECG_LEAD_NAMES, ECG_NORMAL_RANGES } from '@/types/ecg'
+import { ECG_LEAD_NAMES, ECG_NORMAL_RANGES, FILTER_MODE_PRESETS, DSP_DEFAULTS } from '@/types/ecg'
 
 /**
  * 2nd-order Butterworth IIR biquad bandpass filter (0.5–40 Hz).
  * Cascades a high-pass (0.5 Hz) and low-pass (40 Hz) biquad section.
  */
-export function bandpassFilter(signal: number[], samplingRate: number): number[] {
-  const highpassed = biquadFilter(signal, computeHighpassCoeffs(0.5, samplingRate))
-  return biquadFilter(highpassed, computeLowpassCoeffs(40, samplingRate))
+export function bandpassFilter(
+  signal: number[],
+  samplingRate: number,
+  highpassHz: number = 0.5,
+  lowpassHz: number = 40,
+): number[] {
+  const highpassed = biquadFilter(signal, computeHighpassCoeffs(highpassHz, samplingRate))
+  return biquadFilter(highpassed, computeLowpassCoeffs(lowpassHz, samplingRate))
 }
 
 interface BiquadCoeffs {
@@ -506,14 +512,26 @@ function analyzeSingleLead(
   leadName: EcgLeadName,
   rawSignal: number[],
   samplingRate: number,
+  dspConfig: DspConfig = DSP_DEFAULTS,
 ): LeadAnalysis {
-  const filteredSignal = bandpassFilter(rawSignal, samplingRate)
-  const rPeaks = detectRPeaks(filteredSignal, samplingRate)
+  // 1. Bandpass filter (configurable cutoffs)
+  const { highpass, lowpass } = FILTER_MODE_PRESETS[dspConfig.filterMode]
+  let processed = bandpassFilter(rawSignal, samplingRate, highpass, lowpass)
+
+  // 2. Notch filter (optional)
+  if (dspConfig.notchFilter !== 'off') {
+    processed = notchFilter(processed, Number(dspConfig.notchFilter), samplingRate)
+  }
+
+  // 3. Baseline wander removal
+  processed = removeBaselineWander(processed, samplingRate)
+
+  const rPeaks = detectRPeaks(processed, samplingRate)
   const rrStats = analyzeRRIntervals(rPeaks, samplingRate)
   const heartRate = calculateHeartRate(rrStats)
-  const intervals = measureIntervals(filteredSignal, rPeaks, samplingRate)
+  const intervals = measureIntervals(processed, rPeaks, samplingRate)
 
-  return { leadName, filteredSignal, rPeaks, rrStats, heartRate, intervals }
+  return { leadName, filteredSignal: processed, rPeaks, rrStats, heartRate, intervals }
 }
 
 /**
@@ -523,13 +541,14 @@ function analyzeSingleLead(
 export async function analyzeFullEcg(
   ecgData: EcgData,
   onProgress?: (leadIndex: number, total: number) => void,
+  dspConfig: DspConfig = DSP_DEFAULTS,
 ): Promise<EcgAnalysisResult> {
   const leadAnalyses: LeadAnalysis[] = []
 
   for (let i = 0; i < ECG_LEAD_NAMES.length; i++) {
     const leadName = ECG_LEAD_NAMES[i]!
     const rawSignal = ecgData.leads[leadName]
-    const analysis = analyzeSingleLead(leadName, rawSignal, ecgData.samplingRate)
+    const analysis = analyzeSingleLead(leadName, rawSignal, ecgData.samplingRate, dspConfig)
     leadAnalyses.push(analysis)
     onProgress?.(i + 1, ECG_LEAD_NAMES.length)
     // Yield to event loop for UI updates
