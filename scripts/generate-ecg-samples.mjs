@@ -75,6 +75,22 @@ function noise() {
   return randn() * 0.02;
 }
 
+/**
+ * Powerline interference — sinusoidal noise at mains frequency.
+ * Typical amplitude 0.05–0.15 mV in a real ECG recording.
+ */
+function powerlineNoise(t, frequency = 50, amplitude = 0.1) {
+  return amplitude * Math.sin(2 * Math.PI * frequency * t);
+}
+
+/**
+ * Baseline wander — slow sinusoidal drift simulating respiration
+ * and electrode motion artifact. Typically 0.15–0.3 Hz.
+ */
+function baselineWander(t, frequency = 0.2, amplitude = 0.3) {
+  return amplitude * Math.sin(2 * Math.PI * frequency * t);
+}
+
 // ---------------------------------------------------------------------------
 // Single-beat PQRST generator (returns value in mV for a given time offset
 // within one RR interval, using lead-specific multipliers).
@@ -207,6 +223,8 @@ function generateTrace(config) {
     irregular = false,
     rrRange = [650, 950],
     waveParams = {},
+    powerline = null,
+    wander = null,
   } = config;
 
   // Initialise empty lead arrays
@@ -243,6 +261,23 @@ function generateTrace(config) {
     samplesPlaced += beatSamples;
   }
 
+  // Apply continuous noise artifacts across the full trace
+  for (const lead of LEAD_NAMES) {
+    for (let i = 0; i < leads[lead].length; i++) {
+      const t = i / SAMPLING_RATE;
+
+      // Powerline interference (50/60 Hz)
+      if (powerline) {
+        leads[lead][i] += powerlineNoise(t, powerline.frequency, powerline.amplitude);
+      }
+
+      // Baseline wander
+      if (wander) {
+        leads[lead][i] += baselineWander(t, wander.frequency, wander.amplitude);
+      }
+    }
+  }
+
   // Round all values to 4 decimal places
   for (const lead of LEAD_NAMES) {
     for (let i = 0; i < leads[lead].length; i++) {
@@ -264,6 +299,8 @@ const datasets = [
     recordingDate: "2024-01-15",
     traceConfig: {
       rrMs: 833, // ~72 bpm
+      powerline: { frequency: 60, amplitude: 0.08 },
+      wander: { frequency: 0.15, amplitude: 0.2 },
       waveParams: {
         pDur: 80,
         prSeg: 60,  // PR total ~160ms (pDur 80 + prSeg 60 + Q onset ~20)
@@ -286,6 +323,8 @@ const datasets = [
     recordingDate: "2024-01-15",
     traceConfig: {
       rrMs: 1250, // ~48 bpm
+      powerline: { frequency: 50, amplitude: 0.1 },
+      wander: { frequency: 0.2, amplitude: 0.25 },
       waveParams: {
         pDur: 80,
         prSeg: 70,  // PR ~170ms
@@ -308,6 +347,8 @@ const datasets = [
     recordingDate: "2024-01-15",
     traceConfig: {
       rrMs: 522, // ~115 bpm
+      powerline: { frequency: 60, amplitude: 0.12 },
+      wander: { frequency: 0.25, amplitude: 0.3 },
       waveParams: {
         pDur: 70,
         prSeg: 50,  // PR ~140ms
@@ -332,6 +373,8 @@ const datasets = [
       rrMs: 800, // ~75 bpm average (not actually used when irregular=true)
       irregular: true,
       rrRange: [650, 950],
+      powerline: { frequency: 50, amplitude: 0.1 },
+      wander: { frequency: 0.18, amplitude: 0.35 },
       waveParams: {
         pDur: 80,
         prSeg: 60,
@@ -354,6 +397,8 @@ const datasets = [
     recordingDate: "2024-01-15",
     traceConfig: {
       rrMs: 923, // ~65 bpm
+      powerline: { frequency: 60, amplitude: 0.08 },
+      wander: { frequency: 0.2, amplitude: 0.2 },
       waveParams: {
         pDur: 80,
         prSeg: 60,
@@ -376,6 +421,8 @@ const datasets = [
     recordingDate: "2024-02-10",
     traceConfig: {
       rrMs: 882, // ~68 bpm
+      powerline: { frequency: 50, amplitude: 0.15 },
+      wander: { frequency: 0.22, amplitude: 0.3 },
       waveParams: {
         pDur: 90,
         prSeg: 130, // PR total ~240ms (very prolonged)
@@ -398,6 +445,8 @@ const datasets = [
     recordingDate: "2024-02-10",
     traceConfig: {
       rrMs: 750, // ~80 bpm
+      powerline: { frequency: 60, amplitude: 0.1 },
+      wander: { frequency: 0.15, amplitude: 0.25 },
       waveParams: {
         pDur: 80,
         prSeg: 60,
@@ -422,6 +471,8 @@ const datasets = [
       rrMs: 700, // ~85 bpm average (not used — irregular)
       irregular: true,
       rrRange: [450, 1100], // Very wide RR range for AF
+      powerline: { frequency: 50, amplitude: 0.12 },
+      wander: { frequency: 0.3, amplitude: 0.4 },
       waveParams: {
         pDur: 40,    // Tiny / absent P waves
         prSeg: 30,
@@ -444,6 +495,8 @@ const datasets = [
     recordingDate: "2024-03-05",
     traceConfig: {
       rrMs: 857, // ~70 bpm
+      powerline: { frequency: 60, amplitude: 0.08 },
+      wander: { frequency: 0.2, amplitude: 0.2 },
       waveParams: {
         pDur: 90,    // Slightly wider P (left atrial enlargement)
         prSeg: 60,
@@ -466,6 +519,8 @@ const datasets = [
     recordingDate: "2024-03-05",
     traceConfig: {
       rrMs: 750, // ~80 bpm
+      powerline: { frequency: 50, amplitude: 0.1 },
+      wander: { frequency: 0.25, amplitude: 0.3 },
       waveParams: {
         pDur: 78,
         prSeg: 58,
