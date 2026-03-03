@@ -4,7 +4,7 @@ import { useEcgMonitorStore } from '@/stores/ecg-monitor'
 import type { MonitorUrgency } from '@/types/ecg-monitor'
 
 const store = useEcgMonitorStore()
-const emit = defineEmits<{ 'next-patient': [] }>()
+const emit = defineEmits<{ 'next-patient': []; 'previous-patient': [] }>()
 
 const showFlagForm = ref(false)
 const showOverrideForm = ref(false)
@@ -47,6 +47,12 @@ function saveOverride() {
   showOverrideForm.value = false
 }
 
+function previousPatient() {
+  showFlagForm.value = false
+  showOverrideForm.value = false
+  emit('previous-patient')
+}
+
 function nextPatient() {
   showFlagForm.value = false
   showOverrideForm.value = false
@@ -65,6 +71,9 @@ function nextPatient() {
       </button>
       <button class="monitor-btn monitor-btn-override" :disabled="isDisabled()" @click="toggleOverrideForm">
         Override Findings
+      </button>
+      <button class="monitor-btn monitor-btn-next" :disabled="isDisabled()" @click="previousPatient">
+        ← Prev Patient
       </button>
       <button class="monitor-btn monitor-btn-next" :disabled="isDisabled()" @click="nextPatient">
         Next Patient →

@@ -121,7 +121,7 @@ export function useMonitorFeed() {
   }
 
   function switchPatient(index: number) {
-    currentPatientIndex.value = index % MONITOR_PATIENTS.length
+    currentPatientIndex.value = ((index % MONITOR_PATIENTS.length) + MONITOR_PATIENTS.length) % MONITOR_PATIENTS.length
     currentPatient.value = MONITOR_PATIENTS[currentPatientIndex.value]!
     buffer.value = []
     lastSegment.value = []
@@ -134,6 +134,10 @@ export function useMonitorFeed() {
 
   function nextPatient() {
     switchPatient(currentPatientIndex.value + 1)
+  }
+
+  function previousPatient() {
+    switchPatient(currentPatientIndex.value - 1)
   }
 
   function acknowledgeSegment() {
@@ -149,6 +153,7 @@ export function useMonitorFeed() {
     consumeSamples,
     switchPatient,
     nextPatient,
+    previousPatient,
     acknowledgeSegment,
   }
 }

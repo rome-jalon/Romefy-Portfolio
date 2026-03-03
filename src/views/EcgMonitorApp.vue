@@ -13,6 +13,13 @@ import MonitorNotificationLog from '@/components/ecg-monitor/MonitorNotification
 const store = useEcgMonitorStore()
 const canvasRef = ref<InstanceType<typeof MonitorSweepCanvas> | null>(null)
 
+function handlePreviousPatient() {
+  if (!canvasRef.value) return
+  const feed = canvasRef.value.feed
+  feed.previousPatient()
+  store.setPatient(feed.currentPatient.value)
+}
+
 function handleNextPatient() {
   if (!canvasRef.value) return
   const feed = canvasRef.value.feed
@@ -59,7 +66,7 @@ onBeforeRouteLeave(() => {
       <div class="monitor-panel">
         <div class="monitor-panel-inner">
           <MonitorFindings />
-          <MonitorActions @next-patient="handleNextPatient" />
+          <MonitorActions @previous-patient="handlePreviousPatient" @next-patient="handleNextPatient" />
         </div>
       </div>
     </div>
