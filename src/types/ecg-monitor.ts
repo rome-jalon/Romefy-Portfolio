@@ -2,7 +2,6 @@ import type {
   IntervalMeasurements,
   RRIntervalStats,
   AbnormalityFlag,
-  EcgAiInterpretation,
 } from '@/types/ecg'
 
 export interface MonitorWaveParams {
