@@ -3867,6 +3867,78 @@ body {
   border-top: 1px solid var(--color-surface-200);
 }
 
+/* ── DSP Controls ── */
+
+.ecg-dsp-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-surface-100);
+  border: 1px solid var(--color-surface-300);
+  flex-wrap: wrap;
+}
+
+.ecg-dsp-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ecg-dsp-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-surface-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.ecg-dsp-toggle {
+  display: inline-flex;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--color-surface-300);
+}
+
+.ecg-dsp-option {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-surface-600);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.ecg-dsp-option:not(:last-child) {
+  border-right: 1px solid var(--color-surface-300);
+}
+
+.ecg-dsp-option:hover {
+  background-color: var(--color-surface-200);
+}
+
+.ecg-dsp-option.is-active {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: white;
+  font-weight: 600;
+}
+
+.ecg-dsp-option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ecg-dsp-warning {
+  font-size: 0.6875rem;
+  color: #fbbf24;
+  font-style: italic;
+}
+
 /* ── Metrics Panel ── */
 
 .ecg-metrics-panel {
