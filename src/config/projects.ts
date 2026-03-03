@@ -35,4 +35,13 @@ export const projects: ProjectConfig[] = [
     icon: 'Activity',
     route: '/ecg-analyzer',
   },
+  {
+    id: 'urban-change',
+    title: 'AI Urban Change Detector',
+    description:
+      'Search any city, select a district, and compare building footprints across time periods with AI-narrated urban change analysis.',
+    tags: ['Vue 3', 'Leaflet.js', 'Overpass API', 'OpenRouter AI'],
+    icon: 'MapPin',
+    route: '/urban-change',
+  },
 ]

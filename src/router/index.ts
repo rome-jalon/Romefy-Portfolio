@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import('@/views/EcgAnalyzerApp.vue'),
     },
     {
+      path: '/urban-change',
+      name: 'urban-change',
+      component: () => import('@/views/UrbanChangeApp.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('@/views/NotFoundView.vue'),
