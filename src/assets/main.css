@@ -2095,13 +2095,13 @@ body {
 
 .portfolio-hero {
   text-align: center;
-  padding: 4rem 1rem 2.5rem;
+  padding: 2rem 1rem 2rem;
   max-width: 40rem;
 }
 
 @media (min-width: 640px) {
   .portfolio-hero {
-    padding: 6rem 1.5rem 3rem;
+    padding: 3rem 1.5rem 2.5rem;
   }
 }
 
