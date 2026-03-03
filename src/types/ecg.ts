@@ -86,6 +86,25 @@ export interface EcgCanvasConfig {
   showRPeaks: boolean
 }
 
+export type FilterMode = 'monitoring' | 'diagnostic'
+
+export type NotchFilterSetting = 'off' | '50' | '60'
+
+export interface DspConfig {
+  filterMode: FilterMode
+  notchFilter: NotchFilterSetting
+}
+
+export const FILTER_MODE_PRESETS: Record<FilterMode, { highpass: number; lowpass: number }> = {
+  monitoring: { highpass: 0.5, lowpass: 40 },
+  diagnostic: { highpass: 0.05, lowpass: 150 },
+}
+
+export const DSP_DEFAULTS: DspConfig = {
+  filterMode: 'monitoring',
+  notchFilter: 'off',
+}
+
 export const STANDARD_3x4_LAYOUT: [EcgLeadName, EcgLeadName, EcgLeadName, EcgLeadName][] = [
   ['I', 'aVR', 'V1', 'V4'],
   ['II', 'aVL', 'V2', 'V5'],
