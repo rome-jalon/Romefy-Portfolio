@@ -84,7 +84,7 @@ onMounted(() => {
 
     const rect = L.rectangle(
       [[b.south, b.west], [b.north, b.east]],
-      { color: '#10b981', weight: 2, fillOpacity: 0.2 },
+      { color: '#f59e0b', weight: 2, fillOpacity: 0.2 },
     )
     rect.addTo(miniMap)
     miniMap.fitBounds(rect.getBounds(), { padding: [20, 20] })

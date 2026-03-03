@@ -116,7 +116,7 @@ onMounted(() => {
       const b = store.selectedBounds
       const rect = L.rectangle(
         [[b.south, b.west], [b.north, b.east]],
-        { color: '#6ee7b7', weight: 1, fillOpacity: 0.05, dashArray: '6 4' },
+        { color: '#fbbf24', weight: 1, fillOpacity: 0.05, dashArray: '6 4' },
       )
       rect.addTo(m)
       m.fitBounds(rect.getBounds(), { padding: [30, 30] })

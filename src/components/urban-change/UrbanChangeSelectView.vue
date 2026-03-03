@@ -22,10 +22,10 @@ let isDrawing = false
 let currentRect: L.Rectangle | null = null
 
 const RECT_STYLE: L.PathOptions = {
-  color: '#10b981',
+  color: '#f59e0b',
   weight: 2,
   fillOpacity: 0.15,
-  fillColor: '#10b981',
+  fillColor: '#f59e0b',
 }
 
 const quickStartCities: QuickStartCity[] = [
