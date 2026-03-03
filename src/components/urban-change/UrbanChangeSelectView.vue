@@ -205,7 +205,8 @@ function closeResults() {
 
 onMounted(() => {
   nextTick(() => {
-    const map = L.map('uc-map', { zoomControl: true }).setView([20, 0], 3)
+    const map = L.map('uc-map', { zoomControl: false }).setView([20, 0], 3)
+    L.control.zoom({ position: 'bottomleft' }).addTo(map)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://carto.com/">CARTO</a> | &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
       maxZoom: 19,
