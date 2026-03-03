@@ -66,7 +66,7 @@ function nextPatient() {
       <button class="monitor-btn monitor-btn-override" :disabled="isDisabled()" @click="toggleOverrideForm">
         Override Findings
       </button>
-      <button class="monitor-btn monitor-btn-next" @click="nextPatient">
+      <button class="monitor-btn monitor-btn-next" :disabled="isDisabled()" @click="nextPatient">
         Next Patient →
       </button>
     </div>

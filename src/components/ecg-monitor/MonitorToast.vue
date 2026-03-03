@@ -16,22 +16,24 @@ watch(() => store.activeToast, (toast) => {
 </script>
 
 <template>
-  <div
-    v-if="store.activeToast"
-    class="monitor-toast"
-    :class="{
-      'is-routine': store.activeToast.urgency === 'routine',
-      'is-urgent': store.activeToast.urgency === 'urgent',
-      'is-critical': store.activeToast.urgency === 'critical',
-    }"
-  >
-    <button class="monitor-toast-close" @click="store.dismissToast()">×</button>
-    <div class="monitor-toast-title">
-      Alert sent for {{ store.activeToast.patientName }}
+  <Transition name="monitor-toast">
+    <div
+      v-if="store.activeToast"
+      class="monitor-toast"
+      :class="{
+        'is-routine': store.activeToast.urgency === 'routine',
+        'is-urgent': store.activeToast.urgency === 'urgent',
+        'is-critical': store.activeToast.urgency === 'critical',
+      }"
+    >
+      <button class="monitor-toast-close" @click="store.dismissToast()">×</button>
+      <div class="monitor-toast-title">
+        Alert sent for {{ store.activeToast.patientName }}
+      </div>
+      <div class="monitor-toast-body">
+        {{ store.activeToast.urgency.charAt(0).toUpperCase() + store.activeToast.urgency.slice(1) }}:
+        {{ store.activeToast.finding }}
+      </div>
     </div>
-    <div class="monitor-toast-body">
-      {{ store.activeToast.urgency.charAt(0).toUpperCase() + store.activeToast.urgency.slice(1) }}:
-      {{ store.activeToast.finding }}
-    </div>
-  </div>
+  </Transition>
 </template>

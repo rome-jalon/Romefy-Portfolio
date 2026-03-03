@@ -6042,6 +6042,21 @@ body {
   color: var(--color-surface-700);
 }
 
+.monitor-toast-enter-active,
+.monitor-toast-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.monitor-toast-enter-from {
+  opacity: 0;
+  transform: translateX(1rem);
+}
+
+.monitor-toast-leave-to {
+  opacity: 0;
+  transform: translateX(1rem);
+}
+
 /* ── Notification Bar ── */
 
 .monitor-notification-bar {
