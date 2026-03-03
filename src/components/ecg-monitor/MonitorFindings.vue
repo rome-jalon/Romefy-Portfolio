@@ -131,15 +131,18 @@ const aiFields = computed(() => {
       </button>
 
       <div v-if="aiExpanded" class="monitor-ai-content">
-        <div v-if="store.aiState === 'loading'" class="monitor-ai-loading">
+        <div v-if="store.aiState === 'loading' && aiFields.length === 0" class="monitor-ai-loading">
           Generating AI interpretation...
         </div>
 
-        <div v-else-if="store.aiState === 'error'" class="monitor-ai-error">
+        <div v-else-if="store.aiState === 'error' && aiFields.length === 0" class="monitor-ai-error">
           {{ store.aiError ?? 'Failed to generate interpretation.' }}
         </div>
 
-        <template v-else-if="store.aiState === 'complete' && aiFields.length > 0">
+        <template v-else-if="aiFields.length > 0">
+          <div v-if="store.aiState === 'loading'" class="monitor-ai-loading">
+            Updating interpretation...
+          </div>
           <div
             v-for="field in aiFields"
             :key="field.label"
