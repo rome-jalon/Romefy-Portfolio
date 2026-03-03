@@ -4448,9 +4448,9 @@ body {
 }
 
 .uc-quick-start-btn:hover {
-  border-color: var(--color-primary-400);
-  color: var(--color-primary-600);
-  background-color: var(--color-primary-50);
+  border-color: #d97706;
+  color: #fbbf24;
+  background-color: rgba(245, 158, 11, 0.1);
 }
 
 /* Map layout */
