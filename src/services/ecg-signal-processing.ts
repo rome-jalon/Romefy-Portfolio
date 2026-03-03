@@ -107,6 +107,59 @@ export function notchFilter(
 }
 
 /**
+ * Baseline wander removal via moving-average subtraction.
+ * Computes a slow-moving average (windowSec ≈ 0.8 s) and subtracts it,
+ * removing drift while preserving PQRST morphology.
+ */
+export function removeBaselineWander(
+  signal: number[],
+  samplingRate: number,
+  windowSec: number = 0.8,
+): number[] {
+  const windowSize = Math.round(windowSec * samplingRate)
+  if (windowSize < 1) return [...signal]
+
+  const halfWin = Math.floor(windowSize / 2)
+  const len = signal.length
+  const out = new Array<number>(len)
+
+  // Compute initial window sum
+  let sum = 0
+  const firstEnd = Math.min(halfWin + 1, len)
+  for (let i = 0; i < firstEnd; i++) {
+    sum += signal[i]!
+  }
+
+  for (let i = 0; i < len; i++) {
+    const wStart = Math.max(0, i - halfWin)
+    const wEnd = Math.min(len - 1, i + halfWin)
+    const count = wEnd - wStart + 1
+
+    // Slide window: add the new right edge, remove the old left edge
+    if (i > 0) {
+      const newRight = Math.min(len - 1, i + halfWin)
+      const oldLeft = Math.max(0, i - halfWin - 1)
+      if (newRight !== Math.min(len - 1, (i - 1) + halfWin)) {
+        sum += signal[newRight]!
+      }
+      if (oldLeft !== Math.max(0, (i - 1) - halfWin)) {
+        sum -= signal[oldLeft]!
+      }
+    }
+
+    // Simple recompute to avoid drift in running sum (clean but O(n·w))
+    // For ECG signals (5000 samples, window 400), this is fast enough.
+    let localSum = 0
+    for (let j = wStart; j <= wEnd; j++) {
+      localSum += signal[j]!
+    }
+    out[i] = signal[i]! - localSum / count
+  }
+
+  return out
+}
+
+/**
  * Pan-Tompkins R-peak detection algorithm.
  * Steps: differentiate -> square -> moving-window integrate -> adaptive threshold
  */
