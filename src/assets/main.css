@@ -2211,6 +2211,11 @@ body {
   color: #fbbf24;
 }
 
+.project-icon--ecg-monitor {
+  background: linear-gradient(135deg, #052e16, #166534);
+  color: #22c55e;
+}
+
 .project-card-title {
   font-family: var(--font-display);
   font-size: 1.125rem;
