@@ -5842,7 +5842,7 @@ body {
 /* ── Technician Actions ── */
 
 .monitor-actions {
-  @apply flex items-center flex-wrap;
+  @apply flex items-center flex-wrap justify-center;
   gap: 0.5rem;
 }
 
