@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { Leaf, ListChecks, Activity, MapPin, ArrowRight } from 'lucide-vue-next'
+import { Leaf, ListChecks, Activity, MapPin } from 'lucide-vue-next'
 import { projects } from '@/config/projects'
 import type { Component } from 'vue'
 
@@ -55,9 +55,6 @@ function openProject(route: string) {
               {{ tag }}
             </span>
           </div>
-          <span class="project-card-cta">
-            Open project <ArrowRight :size="14" :stroke-width="2.5" />
-          </span>
         </button>
       </div>
     </section>
