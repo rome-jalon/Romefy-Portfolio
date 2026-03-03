@@ -11,9 +11,14 @@ export function useEcgAnalysis() {
     store.setAnalysisError(null)
 
     try {
+      const dspConfig = {
+        filterMode: store.filterMode,
+        notchFilter: store.notchFilter,
+      }
+
       const result = await analyzeFullEcg(ecgData, (leadIndex, total) => {
         store.setAnalysisProgress(Math.round((leadIndex / total) * 100))
-      })
+      }, dspConfig)
 
       store.setAnalysisResult(result)
       store.setAnalysisState('complete')
