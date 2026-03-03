@@ -4319,6 +4319,7 @@ body {
 
 .uc-search-wrapper {
   position: relative;
+  z-index: 1000;
 }
 
 .uc-search-bar {
